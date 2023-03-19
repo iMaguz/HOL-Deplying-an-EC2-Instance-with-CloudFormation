@@ -1,6 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Deploys basic networking and an EC2 instance
 Parameters:
+  LatestAmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2' 
   InstanceTypeParameter:
     Type: String
     Default: t2.micro
@@ -11,17 +14,6 @@ Parameters:
       - t3.small
     Description: Enter t2.micro, t2.small, t3.micro or t3.small. Default is t2.micro.
 Mappings:
-  RegionMap: 
-    us-east-1: 
-      "HVM64": "ami-005f9685cb30f234b"
-    us-west-1: 
-      "HVM64": "ami-0bdb828fd58c52235"
-    eu-west-1: 
-      "HVM64": "ami-047bb4163c506cd98"
-    ap-southeast-1: 
-      "HVM64": "ami-08569b978cc4dfa10"
-    ap-northeast-1: 
-      "HVM64": "ami-06cd52961ce9f0d85"
   Subnet1Config:
     VPC1:
       CIDR: 10.0.0.0/16
@@ -203,7 +195,7 @@ Resources:
     Properties:
       InstanceType:
         Ref: InstanceTypeParameter
-      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", HVM64]
+      ImageId: !Ref LatestAmiId
       Tags:
         - Key: Name
           Value: MyInstance
